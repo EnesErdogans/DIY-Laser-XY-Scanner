@@ -1,0 +1,20 @@
+import serial
+import time
+
+arduino = serial.Serial("COM3", 9600)
+
+time.sleep(2)
+
+print("1 = Kare")
+print("2 = Daire")
+print("3 = Kalp")
+print("4 = A Harfi")
+print("5 = L Harfi")
+print("6 = V Harfi")
+print("x = Dur")
+
+while True:
+
+    komut = input("Komut Gir: ")
+
+    arduino.write(komut.encode())

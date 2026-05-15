@@ -2,76 +2,96 @@
 
 A low-cost DIY laser XY scanner built using Arduino, dual stepper motors, and custom control algorithms.
 
-This project is capable of drawing geometric shapes and characters using a laser beam and two-axis stepper motor movement.
+This project can draw geometric shapes and characters using a laser beam and two-axis mirror movement controlled by stepper motors.
+
+---
+
+# Project Preview
+
+## Heart Shape
 
 <p align="center">
-  <img src="Images/heart.jpg" width="300">
-  <img src="Images/square.jpg" width="300">
+  <img src="photos/heart.jpeg" width="320">
 </p>
+
+## Circle
+
+<p align="center">
+  <img src="photos/circle.jpeg" width="320">
+</p>
+
+## Square
+
+<p align="center">
+  <img src="photos/square.jpeg" width="320">
+</p>
+
+## L Character
+
+<p align="center">
+  <img src="photos/L.jpeg" width="320">
+</p>
+
+---
+
+# System Overview
+
+<p align="center">
+  <img src="photos/system.PNG" width="500">
+</p>
+
+The system uses two stepper motors with mirrors attached to create X-Y laser movement.
+
+The laser remains continuously ON while the mirrors redirect the beam to generate shapes.
+
+---
+
+# 3D Design Reference
+
+The mechanical structure was inspired by the following open-source project:
+
+- Instructables Project:  
+https://www.instructables.com/Low-Cost-DIY-Stepper-Motor-Laser-XY-Scanner-Cutter/
+
+The following 3D design references were used as inspiration:
+
+<p align="center">
+  <img src="photos/Laser XY Scanner 1.png" width="250">
+  <img src="photos/Laser XY Scanner 2.png" width="250">
+  <img src="photos/Laser XY Scanner 3.png" width="250">
+</p>
+
+I only used the mechanical/3D design idea as a reference.
+
+All software, motion logic, serial communication structure, drawing algorithms, and shape generation code were fully written and redesigned by me.
 
 ---
 
 # Features
 
-- Dual-axis laser scanning system
-- Custom Arduino control software
+- Dual-axis laser scanner
+- Real-time shape drawing
+- Arduino-based motion control
 - Python serial controller
-- Real-time laser drawing
-- Draws:
-  - Square
-  - Circle
-  - Heart
-  - L Character
-  - V Character
-  - A Character
-- Manual WASD control
-- Adjustable speed and drawing size
-- Low-cost hardware design
+- Manual WASD movement
+- Adjustable speed and shape size
+- Low-cost design
+- Beginner-friendly hardware
 
 ---
 
-# Project Overview
+# Shapes Supported
 
-The system uses:
-
-- Arduino
-- 2x 28BYJ-48 stepper motors
-- ULN2003 motor drivers
-- Laser diode module
-- Custom XY movement algorithms
-
-The laser beam is redirected using two mirrors attached to stepper motors, creating a simple XY laser scanner.
-
-Unlike traditional galvo systems, this setup is extremely low-cost and beginner-friendly.
+- Square
+- Circle
+- Heart
+- L Character
+- V Character
+- A Character
 
 ---
 
-# My Contribution
-
-The mechanical design inspiration was taken from the following open-source project:
-
-- Instructables Project:  
-  https://www.instructables.com/Low-Cost-DIY-Stepper-Motor-Laser-XY-Scanner-Cutter/
-
-- Original GitHub Repository:  
-  https://github.com/ThingEngineer/Laser-XY-Scanner
-
-I only used the 3D model/mechanical idea as inspiration.
-
-All control software, movement logic, drawing algorithms, serial communication structure, and shape generation code were written and redesigned by me.
-
-This project includes completely custom:
-- Arduino firmware
-- Motion logic
-- Shape generation
-- Serial command system
-- Drawing routines
-
----
-
-# Hardware
-
-## Components
+# Hardware Used
 
 | Component | Quantity |
 |---|---|
@@ -88,16 +108,19 @@ This project includes completely custom:
 
 ## Arduino
 
-- Language: C++
-- Library:
-  - AccelStepper
+Language:
+- C++
+
+Library:
+- AccelStepper
+
+Install from Arduino Library Manager.
+
+---
 
 ## Python
 
-- Python 3
-- pyserial
-
-Install pyserial:
+Required library:
 
 ```bash
 pip install pyserial
@@ -124,31 +147,18 @@ pip install pyserial
 
 ---
 
-# Project Images
+# How It Works
 
-## Heart Shape
+The system redirects a laser beam using two mirrors attached to stepper motors.
 
-<p align="center">
-  <img src="Images/heart.jpg" width="350">
-</p>
+Each motor controls one axis:
 
-## Circle
+- X axis
+- Y axis
 
-<p align="center">
-  <img src="Images/circle.jpg" width="350">
-</p>
+The Arduino calculates target coordinates and continuously updates motor positions to generate visible laser shapes.
 
-## Square
-
-<p align="center">
-  <img src="Images/square.jpg" width="350">
-</p>
-
-## L Character
-
-<p align="center">
-  <img src="Images/l.jpg" width="350">
-</p>
+Unlike expensive galvo scanners, this project uses low-cost stepper motors and simple electronics.
 
 ---
 
@@ -156,13 +166,13 @@ pip install pyserial
 
 - SVG drawing support
 - G-code support
-- Laser modulation (TTL)
-- Higher-speed scanning
+- Laser TTL control
+- Faster scanning
 - Galvo mirror upgrade
 - Image drawing support
-- Joystick control
-- WiFi control
+- Wireless control
 - Mobile application
+- Real-time drawing interface
 
 ---
 
@@ -170,7 +180,7 @@ pip install pyserial
 
 This project uses a laser diode.
 
-Avoid direct eye exposure to the laser beam and always use proper laser safety precautions.
+Avoid direct eye exposure and always follow proper laser safety precautions.
 
 ---
 
@@ -178,4 +188,4 @@ Avoid direct eye exposure to the laser beam and always use proper laser safety p
 
 This project is open-source.
 
-Please give proper attribution if you use or modify this project.
+Please provide proper attribution if you use or modify this project.

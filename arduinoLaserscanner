@@ -1,0 +1,473 @@
+#include <AccelStepper.h>
+
+#define HALFSTEP 8
+
+// =========================
+// X MOTOR
+// =========================
+AccelStepper stepperX(HALFSTEP, 2, 4, 3, 5);
+
+// =========================
+// Y MOTOR
+// =========================
+AccelStepper stepperY(HALFSTEP, 6, 8, 7, 9);
+
+// =========================
+// POZİSYONLAR
+// =========================
+long currentX = 0;
+long currentY = 0;
+
+long centerX = 0;
+long centerY = 0;
+
+// =========================
+// MODLAR
+// =========================
+bool drawCircleMode = false;
+bool drawSquareMode = false;
+bool drawHeartMode = false;
+bool drawAMode = false;
+bool drawLMode = false;
+bool drawVMode = false;
+
+float angle = 0;
+int squareStep = 0;
+
+// =========================
+// AYARLAR
+// =========================
+const int radius = 25;
+const int manualStep = 2;
+
+void setup() {
+
+  Serial.begin(9600);
+
+  // HIZ
+  stepperX.setMaxSpeed(70000);
+  stepperX.setAcceleration(70000);
+
+  stepperY.setMaxSpeed(70000);
+  stepperY.setAcceleration(70000);
+
+  stepperX.setCurrentPosition(0);
+  stepperY.setCurrentPosition(0);
+
+  Serial.println("SISTEM HAZIR");
+}
+
+void loop() {
+
+  // =========================
+  // SERIAL KOMUT
+  // =========================
+  if (Serial.available()) {
+
+    char cmd = Serial.read();
+
+    // -------------------------
+    // WASD MANUEL KONTROL
+    // -------------------------
+
+    if (cmd == 'w') {
+      currentY += manualStep;
+      stepperY.moveTo(currentY);
+    }
+
+    if (cmd == 's') {
+      currentY -= manualStep;
+      stepperY.moveTo(currentY);
+    }
+
+    if (cmd == 'a') {
+      currentX -= manualStep;
+      stepperX.moveTo(currentX);
+    }
+
+    if (cmd == 'd') {
+      currentX += manualStep;
+      stepperX.moveTo(currentX);
+    }
+
+    // -------------------------
+    // MERKEZ KAYDET
+    // -------------------------
+    if (cmd == 'm') {
+
+      centerX = currentX;
+      centerY = currentY;
+
+      Serial.println("MERKEZ KAYDEDILDI");
+    }
+
+    // -------------------------
+    // KARE
+    // -------------------------
+    if (cmd == '1') {
+
+      drawSquareMode = true;
+
+      drawCircleMode = false;
+      drawHeartMode = false;
+      drawAMode = false;
+      drawLMode = false;
+      drawVMode = false;
+
+      squareStep = 0;
+
+      Serial.println("KARE");
+    }
+
+    // -------------------------
+    // DAIRE
+    // -------------------------
+    if (cmd == '2') {
+
+      drawCircleMode = true;
+
+      drawSquareMode = false;
+      drawHeartMode = false;
+      drawAMode = false;
+      drawLMode = false;
+      drawVMode = false;
+
+      angle = 0;
+
+      Serial.println("DAIRE");
+    }
+
+    // -------------------------
+    // KALP
+    // -------------------------
+    if (cmd == '3') {
+
+      drawHeartMode = true;
+
+      drawCircleMode = false;
+      drawSquareMode = false;
+      drawAMode = false;
+      drawLMode = false;
+      drawVMode = false;
+
+      angle = 0;
+
+      Serial.println("KALP");
+    }
+
+    // -------------------------
+    // A HARFI
+    // -------------------------
+    if (cmd == '4') {
+
+      drawAMode = true;
+
+      drawCircleMode = false;
+      drawSquareMode = false;
+      drawHeartMode = false;
+      drawLMode = false;
+      drawVMode = false;
+
+      squareStep = 0;
+
+      Serial.println("A HARFI");
+    }
+
+    // -------------------------
+    // L HARFI
+    // -------------------------
+    if (cmd == '5') {
+
+      drawLMode = true;
+
+      drawCircleMode = false;
+      drawSquareMode = false;
+      drawHeartMode = false;
+      drawAMode = false;
+      drawVMode = false;
+
+      squareStep = 0;
+
+      Serial.println("L HARFI");
+    }
+
+    // -------------------------
+    // V HARFI
+    // -------------------------
+    if (cmd == '6') {
+
+      drawVMode = true;
+
+      drawCircleMode = false;
+      drawSquareMode = false;
+      drawHeartMode = false;
+      drawAMode = false;
+      drawLMode = false;
+
+      squareStep = 0;
+
+      Serial.println("V HARFI");
+    }
+
+    // -------------------------
+    // DUR
+    // -------------------------
+    if (cmd == 'x') {
+
+      drawCircleMode = false;
+      drawSquareMode = false;
+      drawHeartMode = false;
+      drawAMode = false;
+      drawLMode = false;
+      drawVMode = false;
+
+      stepperX.moveTo(centerX);
+      stepperY.moveTo(centerY);
+
+      currentX = centerX;
+      currentY = centerY;
+
+      Serial.println("DURDU");
+    }
+  }
+
+  // =========================
+  // DAIRE
+  // =========================
+  if (drawCircleMode) {
+
+    if (stepperX.distanceToGo() == 0 &&
+        stepperY.distanceToGo() == 0) {
+
+      int x = centerX + radius * cos(angle);
+      int y = centerY + radius * sin(angle);
+
+      stepperX.moveTo(x);
+      stepperY.moveTo(y);
+
+      currentX = x;
+      currentY = y;
+
+      angle += 0.60;
+
+      if (angle >= 6.28) {
+        angle = 0;
+      }
+    }
+  }
+
+  // =========================
+  // KARE
+  // =========================
+  if (drawSquareMode) {
+
+    if (stepperX.distanceToGo() == 0 &&
+        stepperY.distanceToGo() == 0) {
+
+      int size = 25;
+
+      if (squareStep == 0) {
+        stepperX.moveTo(centerX - size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 1) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 2) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      if (squareStep == 3) {
+        stepperX.moveTo(centerX - size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      squareStep++;
+
+      if (squareStep > 3) {
+        squareStep = 0;
+      }
+    }
+  }
+
+  // =========================
+  // KALP
+  // =========================
+  if (drawHeartMode) {
+
+    if (stepperX.distanceToGo() == 0 &&
+        stepperY.distanceToGo() == 0) {
+
+      float hx =
+        16 * pow(sin(angle), 3);
+
+      float hy =
+        13 * cos(angle)
+        - 5 * cos(2 * angle)
+        - 2 * cos(3 * angle)
+        - cos(4 * angle);
+
+      hx *= 2;
+      hy *= 2;
+
+      int x = centerX + hx;
+      int y = centerY + hy;
+
+      stepperX.moveTo(x);
+      stepperY.moveTo(y);
+
+      currentX = x;
+      currentY = y;
+
+      angle += 0.25;
+
+      if (angle >= 6.28) {
+        angle = 0;
+      }
+    }
+  }
+
+  // =========================
+  // A HARFI
+  // =========================
+  if (drawAMode) {
+
+    if (stepperX.distanceToGo() == 0 &&
+        stepperY.distanceToGo() == 0) {
+
+      int size = 20;
+
+      if (squareStep == 0) {
+        stepperX.moveTo(centerX - size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 1) {
+        stepperX.moveTo(centerX);
+        stepperY.moveTo(centerY + size);
+      }
+
+      if (squareStep == 2) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 3) {
+        stepperX.moveTo(centerX - 8);
+        stepperY.moveTo(centerY);
+      }
+
+      if (squareStep == 4) {
+        stepperX.moveTo(centerX + 8);
+        stepperY.moveTo(centerY);
+      }
+
+      if (squareStep == 5) {
+        stepperX.moveTo(centerX);
+        stepperY.moveTo(centerY + size);
+      }
+
+      squareStep++;
+
+      if (squareStep > 5) {
+        squareStep = 0;
+      }
+    }
+  }
+
+  // =========================
+  // L HARFI
+  // =========================
+  if (drawLMode) {
+
+    if (stepperX.distanceToGo() == 0 &&
+        stepperY.distanceToGo() == 0) {
+
+      int size = 25;
+
+      if (squareStep == 0) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      if (squareStep == 1) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 2) {
+        stepperX.moveTo(centerX - size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 3) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 4) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      squareStep++;
+
+      if (squareStep > 4) {
+        squareStep = 0;
+      }
+    }
+  }
+
+  // =========================
+  // V HARFI
+  // =========================
+  if (drawVMode) {
+
+    if (stepperX.distanceToGo() == 0 &&
+        stepperY.distanceToGo() == 0) {
+
+      int size = 25;
+
+      if (squareStep == 0) {
+        stepperX.moveTo(centerX - size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      if (squareStep == 1) {
+        stepperX.moveTo(centerX);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 2) {
+        stepperX.moveTo(centerX + size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      if (squareStep == 3) {
+        stepperX.moveTo(centerX);
+        stepperY.moveTo(centerY - size);
+      }
+
+      if (squareStep == 4) {
+        stepperX.moveTo(centerX - size);
+        stepperY.moveTo(centerY + size);
+      }
+
+      squareStep++;
+
+      if (squareStep > 4) {
+        squareStep = 0;
+      }
+    }
+  }
+
+  // =========================
+  // MOTORLARI ÇALIŞTIR
+  // =========================
+  stepperX.run();
+  stepperY.run();
+}
